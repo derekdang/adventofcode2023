@@ -19,16 +19,16 @@ def p1p2(input: list[str]) -> (int, int):
                 if "red" in cube:
                     red_c = int(cube.split(" ")[0])
                     max_r = max(max_r, red_c)
-                elif "blue" in cube:
-                    blue_c = int(cube.split(" ")[0])
-                    max_b = max(max_b, blue_c)
                 elif "green" in cube:
                     green_c = int(cube.split(" ")[0])
                     max_g = max(max_g, green_c)
-            if red_c > RED_LIM or blue_c > BLUE_LIM or green_c > GREEN_LIM:
+                elif "blue" in cube:
+                    blue_c = int(cube.split(" ")[0])
+                    max_b = max(max_b, blue_c)
+            if red_c > RED_LIM or green_c > GREEN_LIM or blue_c > BLUE_LIM :
                 is_valid = False
         
-        multi_score += (max_g * max_b * max_r)
+        multi_score += (max_r * max_g * max_b)
         game_no = split[0].split(" ")[1]
         if is_valid:
             score += int(game_no)
@@ -37,5 +37,5 @@ def p1p2(input: list[str]) -> (int, int):
 if __name__ == "__main__":
     input = open(sys.argv[1]).read().splitlines()
     ans_p1, ans_p2 = p1p2(input)
-    print(f"{ans_p1}")
-    print(f"{ans_p2}")
+    print(f"Part 1 Sum of Game ID with valid configurations: {ans_p1}")
+    print(f"Part 2 Sum of minimum configurations for each game: {ans_p2}")
