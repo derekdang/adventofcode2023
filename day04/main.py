@@ -1,5 +1,6 @@
 # https://adventofcode.com/2023/day/4
 import sys
+import re
 
 def p1p2(input: list[str]) -> (int, int):
     total_pts = 0
@@ -11,14 +12,10 @@ def p1p2(input: list[str]) -> (int, int):
         card_no = int(nums[0].split('Card')[1])
         winning, my_nums = nums[1].split('|')
         winning_set = set()
-        for num in winning.split(' '):
-            if num == "":
-                continue
+        for num in re.findall(r'\S+', winning):
             winning_set.add(int(num))
         
-        for n in my_nums.split(' '):
-            if n == "":
-                continue
+        for n in re.findall(r'\S+', my_nums):
             if int(n) in winning_set:
                 count += 1
         if count > 0:
