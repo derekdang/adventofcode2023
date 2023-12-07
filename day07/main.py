@@ -55,7 +55,8 @@ def sort_into_bucket(hand: str,
         onepair.append(hand)
     else:
         highcards.append(hand)
-def count_chars(hand):
+
+def count_chars(hand: str) -> dict():
     char_count = {}
     for char in hand:
         if char not in char_count:
