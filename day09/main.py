@@ -11,22 +11,6 @@ def find_sub_levels(level: list[int], sublevel_arr: list[list[int]]):
         sublevel_arr.append(next_level)
         curr_level = next_level
         
-def p1(arr: list[list[int]]) -> int:
-    history = 0
-    for level in arr:
-        sub_levels = []
-        find_sub_levels(level, sub_levels)
-        history += find_history(sub_levels)
-    return history
-
-def p2(arr: list[list[int]]) -> int:
-    history = 0
-    for level in arr:
-        sub_levels = []
-        find_sub_levels(level, sub_levels)
-        history += find_f_history(sub_levels)
-    return history
-
 def all_zeros(l: list[int]) -> bool:
     return all(i == 0 for i in l)
 
@@ -56,6 +40,22 @@ def find_f_history(l: list[list[int]]) -> int:
         j += 1 
     top = rev[len(rev) - 1]
     return top[0]
+
+def p1(arr: list[list[int]]) -> int:
+    history = 0
+    for level in arr:
+        sub_levels = []
+        find_sub_levels(level, sub_levels)
+        history += find_history(sub_levels)
+    return history
+
+def p2(arr: list[list[int]]) -> int:
+    history = 0
+    for level in arr:
+        sub_levels = []
+        find_sub_levels(level, sub_levels)
+        history += find_f_history(sub_levels)
+    return history
 
 if __name__ == "__main__":
     input = open(sys.argv[1]).read().splitlines()
