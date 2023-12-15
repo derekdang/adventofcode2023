@@ -1,6 +1,5 @@
 # https://adventofcode.com/2023/day/15
 import sys
-from tqdm import tqdm
 
 def hash(s: str) -> int:
     code = 0
@@ -16,12 +15,12 @@ def find(label: str, arr: list[(str, int)]) -> int:
             return i
     return -1
 
-def p1(input: str):
+def p1(input: str) -> int:
     arr = input.split(",")
     total = sum(hash(s) for s in arr)
     return total
 
-def p2(input: str):
+def p2(input: str) -> int:
     arr = input.split(",")
     hash_map = {}
     box_label_map = {}
