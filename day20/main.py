@@ -1,6 +1,7 @@
 # https://adventofcode.com/2023/day/20
 import sys
 from tqdm import tqdm
+import math
 # bfs essentially graph
 class FlipFlopModule:
     def __init__(self, name, listeners, active):
@@ -80,9 +81,8 @@ def p1():
     #     print(f"{ffm.name}, listeners: {ffm.listeners}, active: {ffm.active}")
     # print(f"broadcaster, listeners:{broadcaster.listeners}")
 
-    BUTTON_PUSHES = 1000
-    # for _ in range(BUTTON_PUSHES):
-    # cn_senders = conjunction_map["cn"].senders
+    BUTTON_PUSHES = 100000
+    cn_senders = conjunction_map["cn"].senders
     num_hi = 0
     num_lo = 0
     for i in tqdm(range(BUTTON_PUSHES)):
@@ -114,15 +114,14 @@ def p1():
                         break
                 elif rec_signal in conjunction_map:
                     cm = conjunction_map[rec_signal]
-                    if cm.name == "cn":
-                        pass
-                        # print(f"{cm.name}, senders: {cm.senders}, listeners: {cm.listeners}, sender_remember: {cm.last_sender_high_s}")
                     if high_signal:
                         cm.last_sender_high_s[last_sender] = True
                     else:
                         cm.last_sender_high_s[last_sender] = False
 
                     for cml in cm.listeners:
+                        if rec_signal in cn_senders and cm.should_send_high():
+                            print(i, cm.name)
                         q.append((rec_signal, cml, cm.should_send_high()))
                         last_added += 1
                     break
@@ -132,6 +131,8 @@ def p1():
         # for _, ffm in flip_flop_map.items():
         #     print(f"{i + 1}: {ffm.name}, listeners: {ffm.listeners}, active: {ffm.active}")
         # print("\n\n\n")
+        # ch - 3917 , ch - 3943, th 3947 , sv - 4001
+    print(lcm(3917, 3943, 3947, 4001))
     print(num_hi * (num_lo + BUTTON_PUSHES))
 if __name__ == "__main__":
     input = open(sys.argv[1]).read().splitlines()
