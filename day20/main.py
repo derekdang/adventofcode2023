@@ -2,7 +2,7 @@
 import sys
 from tqdm import tqdm
 import math
-# bfs essentially graph
+
 class FlipFlopModule:
     def __init__(self, name, listeners, active):
         self.name = name
@@ -29,14 +29,11 @@ class Broadcaster:
         self.name = "broacaster"
         self.listeners = listeners
         self.send_high = send_high
-    
-def p1():
-    flip_flop_map = {}
-    conjunction_map = {}
+
+def generate_graph(flip_flop_map, conjunction_map, broadcaster):
     for line in input:
         m, _ = line.split("->")
         m = m.strip()    
-        broadcaster = Broadcaster([], False)
         name = m[1:]
         if m[0] == "%":
             module = FlipFlopModule(name, [], False)
@@ -51,7 +48,6 @@ def p1():
         m, receivers = line.split("->")
         m = m.strip()
         receivers_arr = receivers.strip().split(", ")
-        # print(m, receivers_arr)
         name = m[1:]
 
         if m[0] == "%":
@@ -72,17 +68,21 @@ def p1():
                     broadcaster.listeners.append(r)
                 elif r in conjunction_map:
                     broadcaster.listeners.append(r)
+
+def p1(BUTTON_PUSHES: int) -> int:
+    flip_flop_map = {}
+    conjunction_map = {}
+    broadcaster = Broadcaster([], False)
+    generate_graph(flip_flop_map, conjunction_map, broadcaster)
         
     for cm in conjunction_map.values():
         cm.start()
-    # for _, cm in conjunction_map.items():
-    #     print(f"{cm.name}, senders: {cm.senders}, listeners: {cm.listeners}, sender_remember: {cm.last_sender_high_s}")
-    # for _, ffm in flip_flop_map.items():
-    #     print(f"{ffm.name}, listeners: {ffm.listeners}, active: {ffm.active}")
-    # print(f"broadcaster, listeners:{broadcaster.listeners}")
 
-    BUTTON_PUSHES = 100000
     cn_senders = conjunction_map["cn"].senders
+    num_hi, num_lo = simulate_button_pushes(flip_flop_map, conjunction_map, broadcaster, BUTTON_PUSHES)
+    return (num_hi * (num_lo + BUTTON_PUSHES))
+
+def simulate_button_pushes(flip_flop_map, conjunction_map, broadcaster, BUTTON_PUSHES) -> (int, int):
     num_hi = 0
     num_lo = 0
     for i in tqdm(range(BUTTON_PUSHES)):
@@ -92,17 +92,13 @@ def p1():
         while len(q) != 0:
             curr_size = len(q)
             last_added = 0
-            # print(q)
             for _ in range(curr_size - last_added):
                 last_sender, rec_signal, high_signal = q.pop(0)
                 signal_sent = "high" if high_signal else "low"
-                if rec_signal == "rx" and signal_sent == "low":
-                    print(f"{i}: {rec_signal}, {signal_sent}")
                 if high_signal:
                     num_hi += 1
                 else:
                     num_lo += 1
-                # print(f"{last_sender} -> sends {signal_sent} to {rec_signal}")
                 if rec_signal in flip_flop_map:
                     rm = flip_flop_map[rec_signal]
                     if not high_signal:
@@ -120,20 +116,11 @@ def p1():
                         cm.last_sender_high_s[last_sender] = False
 
                     for cml in cm.listeners:
-                        if rec_signal in cn_senders and cm.should_send_high():
-                            print(i, cm.name)
                         q.append((rec_signal, cml, cm.should_send_high()))
                         last_added += 1
                     break
-        # print("\n\n\n")
-        # for _, cm in conjunction_map.items():
-        #     print(f"{i + 1}: {cm.name}, senders: {cm.senders}, listeners: {cm.listeners}, sender_remember: {cm.last_sender_high_s}")
-        # for _, ffm in flip_flop_map.items():
-        #     print(f"{i + 1}: {ffm.name}, listeners: {ffm.listeners}, active: {ffm.active}")
-        # print("\n\n\n")
-        # ch - 3917 , ch - 3943, th 3947 , sv - 4001
-    print(lcm(3917, 3943, 3947, 4001))
-    print(num_hi * (num_lo + BUTTON_PUSHES))
+    return num_hi,num_lo
+
 if __name__ == "__main__":
     input = open(sys.argv[1]).read().splitlines()
-    p1()
+    print (p1(1000))
